@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = contactForm.querySelector('textarea').value;
 
             try {
-                const response = await fetch('framewo-jshzwqldu-anouarsabs-projects.vercel.app', {
+                const response = await fetch('https://framewo-jshzwqldu-anouarsabs-projects.vercel.app/api/contact', { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nom, email, message })
