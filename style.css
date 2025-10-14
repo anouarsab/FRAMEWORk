@@ -1,0 +1,262 @@
+/* --- Styles de base et Reset --- */
+:root {
+    --primary-color: #007bff; /* Bleu pour les boutons/liens */
+    --secondary-color: #f8f9fa; /* Arrière-plan clair */
+    --dark-color: #343a40; /* Arrière-plan sombre pour les sections */
+    --text-color: #212529;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #fff;
+}
+
+h1, h2, h3 {
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.section {
+    padding: 4rem 10%;
+    text-align: center;
+}
+
+/* --- Boutons et Liens --- */
+.btn {
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+.dark-bg {
+    background-color: var(--dark-color);
+    color: white;
+}
+.dark-bg h2 {
+    color: white;
+}
+
+/* --- BARRE DE NAVIGATION FIXE --- */
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 10%;
+    background-color: transparent; /* Transparent par défaut */
+    box-shadow: none;
+    z-index: 1000;
+    transition: background-color 0.4s, box-shadow 0.4s;
+    text-align: right;
+}
+
+#navbar.scrolled {
+    background-color: white; /* Couleur au défilement */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#navbar a {
+    color: white; /* Couleur par défaut (sur le fond sombre du hero) */
+    margin-left: 20px;
+    font-weight: bold;
+    transition: color 0.4s;
+}
+
+#navbar.scrolled a {
+    color: var(--dark-color); /* Couleur des liens au défilement */
+}
+
+/* --- HEADER / HERO --- */
+.hero {
+    /* Retirez l'image si elle n'existe pas pour ne pas causer de bug */
+    /* background: url('votre_image_de_fond.jpg') no-repeat center center/cover; */
+    background-color: var(--dark-color);
+    color: white;
+    min-height: 80vh; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 60px; 
+}
+
+.hero-content {
+    position: relative; /* Correction : Assure que le texte est au-dessus */
+    z-index: 2; /* Correction : Ajoute un z-index élevé */
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    color: white; /* Correction : Assure que le texte est blanc sur le fond sombre */
+    margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: white; /* Correction : Assure que le texte est blanc */
+}
+
+/* --- EFFET DE RÉVÉLATION (Scroll Reveal) --- */
+.reveal {
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- EFFET MACHINE À ÉCRIRE (Cursor clignotant) --- */
+#typewriter::after {
+    content: '|';
+    animation: blink-caret 0.75s step-end infinite;
+    font-weight: 100;
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: white; } /* Correction : Curseur blanc */
+}
+
+/* --- SECTION COMPÉTENCES --- */
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.skill-card {
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+}
+
+.skill-card i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+/* --- SECTION PROJETS --- */
+.project-card {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: left;
+    margin: 2rem auto;
+    max-width: 800px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.project-card h3 {
+    color: var(--primary-color);
+}
+
+.project-card p.stack {
+    margin-top: 1rem;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.project-link {
+    display: inline-block;
+    margin-right: 15px;
+    margin-top: 10px;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* --- FORMULAIRE DE CONTACT --- */
+.contact-form {
+    max-width: 600px;
+    margin: 2rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    font-family: var(--font-family);
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+/* --- FOOTER --- */
+footer {
+    background: var(--dark-color);
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .section {
+        padding: 2rem 5%;
+    }
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+    .skills-grid {
+        flex-direction: column;
+    }
+    .skill-card {
+        width: 100%;
+    }
+    #navbar {
+        text-align: center;
+    }
+    #navbar a {
+        margin: 0 10px;
+    }
+}
