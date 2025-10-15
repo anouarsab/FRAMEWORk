@@ -1,10 +1,24 @@
-/* --- Styles de base et Reset --- */
+/*
+=====================================================
+STYLES GLOBALES ET VARIABLES
+=====================================================
+*/
 :root {
-    --primary-color: #007bff; /* Bleu pour les boutons/liens */
+    /* Couleurs de base */
+    --primary-color: #007bff; /* Bleu (Gardé pour les liens secondaires si besoin) */
     --secondary-color: #f8f9fa; /* Arrière-plan clair */
-    --dark-color: #343a40; /* Arrière-plan sombre pour les sections */
-    --text-color: #212529;
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --dark-color: #343a40; /* Couleur pour les arrière-plans sombres */
+    
+    /* Couleur d'Accent Vif (Orange/Mandarine) */
+    --accent-color: #ff5722; 
+    
+    /* Couleurs du texte et du fond */
+    --text-color: #333; /* Texte sombre */
+    --background-color: #f9f9f9; /* Arrière-plan général très clair */
+
+    /* Typographie Moderne (Nécessite les liens dans index.html) */
+    --font-body: 'Roboto', sans-serif;
+    --font-heading: 'Montserrat', sans-serif;
 }
 
 * {
@@ -14,20 +28,23 @@
 }
 
 body {
-    font-family: var(--font-family);
+    font-family: var(--font-body); /* Roboto pour le corps */
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #fff;
+    background-color: var(--background-color);
 }
 
 h1, h2, h3 {
     margin-bottom: 1rem;
     color: var(--dark-color);
+    font-family: var(--font-heading); /* Montserrat pour les titres */
+    font-weight: 700;
 }
 
 a {
     text-decoration: none;
     color: var(--primary-color);
+    transition: color 0.3s ease;
 }
 
 .section {
@@ -35,20 +52,26 @@ a {
     text-align: center;
 }
 
-/* --- Boutons et Liens --- */
-.btn {
-    display: inline-block;
-    background: var(--primary-color);
+/* --- Boutons (btn) et Formulaire --- */
+.btn, .contact-form button {
+    /* Style de bouton accentué */
+    background-color: var(--accent-color);
     color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-    margin-top: 1rem;
-    font-weight: bold;
+    border: none;
+    padding: 12px 25px; /* Augmenté légèrement pour l'impact */
+    cursor: pointer;
+    border-radius: 5px; 
+    font-size: 16px;
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3); /* Ombre légère de couleur */
 }
 
-.btn:hover {
-    background: #0056b3;
+.btn:hover, .contact-form button:hover {
+    background-color: #e64a19; 
+    transform: translateY(-2px); /* Léger soulèvement */
+    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.5); /* Ombre plus marquée au survol */
 }
 
 .dark-bg {
@@ -59,140 +82,200 @@ a {
     color: white;
 }
 
-/* --- BARRE DE NAVIGATION FIXE --- */
+/* =====================================================
+BARRE DE NAVIGATION FIXE (Amélioration structurelle)
+=====================================================
+*/
 #navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     padding: 15px 10%;
-    background-color: transparent; /* Transparent par défaut */
+    background-color: transparent; 
     box-shadow: none;
     z-index: 1000;
     transition: background-color 0.4s, box-shadow 0.4s;
-    text-align: right;
+    
+    /* Flexbox pour aligner Logo/Nom à gauche et Liens à droite */
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
 }
 
-#navbar.scrolled {
-    background-color: white; /* Couleur au défilement */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-#navbar a {
-    color: white; /* Couleur par défaut (sur le fond sombre du hero) */
-    margin-left: 20px;
-    font-weight: bold;
+.logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
     transition: color 0.4s;
 }
 
-#navbar.scrolled a {
-    color: var(--dark-color); /* Couleur des liens au défilement */
+#navbar.scrolled .logo {
+    color: var(--dark-color);
 }
 
-/* --- HEADER / HERO --- */
+.nav-links {
+    /* Conteneur pour les liens */
+    text-align: right; 
+}
+
+#navbar a {
+    color: white;
+    margin-left: 20px;
+    font-weight: bold;
+    transition: color 0.4s;
+    padding-bottom: 5px; /* Espace pour la bordure active */
+}
+
+#navbar.scrolled a {
+    color: var(--dark-color); 
+}
+
+.navbar a.active {
+    color: var(--accent-color) !important; /* Force la couleur sur les deux états */
+    border-bottom: 2px solid var(--accent-color);
+}
+
+#navbar.scrolled {
+    background-color: white; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* =====================================================
+HEADER / HERO (Design Asymétrique)
+=====================================================
+*/
 .hero {
-    /* Retirez l'image si elle n'existe pas pour ne pas causer de bug */
-    /* background: url('votre_image_de_fond.jpg') no-repeat center center/cover; */
     background-color: var(--dark-color);
     color: white;
     min-height: 80vh; 
+    
+    /* Configuration Flexbox pour l'asymétrie */
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding-top: 60px; 
+    justify-content: space-between; 
+    text-align: left; /* Aligne le texte à gauche */
+    padding: 6rem 10% 4rem; /* Plus d'espace en haut */
 }
 
 .hero-content {
-    position: relative; /* Correction : Assure que le texte est au-dessus */
-    z-index: 2; /* Correction : Ajoute un z-index élevé */
+    width: 60%; /* Texte prend 60% */
+    max-width: 700px;
+    position: relative; 
+    z-index: 2; 
+}
+
+.hero-visual {
+    width: 40%; /* Visuel prend 40% */
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+}
+
+.profile-img {
+    width: 250px; 
+    height: 250px;
+    border-radius: 50%; 
+    object-fit: cover;
+    border: 5px solid var(--accent-color); /* Bordure colorée */
+    box-shadow: 0 0 20px rgba(255, 87, 34, 0.6); /* Effet d'éclat doux */
 }
 
 .hero-content h1 {
-    font-size: 3rem;
-    color: white; /* Correction : Assure que le texte est blanc sur le fond sombre */
+    font-size: 3.5rem;
+    color: white; 
     margin-bottom: 0.5rem;
 }
 
 .hero-content p {
     font-size: 1.25rem;
     margin-bottom: 2rem;
-    color: white; /* Correction : Assure que le texte est blanc */
+    color: rgba(255, 255, 255, 0.9); /* Texte légèrement atténué */
 }
 
-/* --- EFFET DE RÉVÉLATION (Scroll Reveal) --- */
-.reveal {
-    position: relative;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-.reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* --- EFFET MACHINE À ÉCRIRE (Cursor clignotant) --- */
-#typewriter::after {
-    content: '|';
-    animation: blink-caret 0.75s step-end infinite;
-    font-weight: 100;
+/* --- EFFET MACHINE À ÉCRIRE (Curseur accentué) --- */
+#typewriter {
+    color: var(--accent-color);
+    font-size: 3.5rem; /* Doit être la même taille que le H1 si inclus */
+    border-right: 3px solid var(--accent-color); 
+    padding-right: 5px;
+    display: inline-block;
 }
 
 @keyframes blink-caret {
     from, to { border-color: transparent; }
-    50% { border-color: white; } /* Correction : Curseur blanc */
+    50% { border-color: var(--accent-color); } /* Curseur avec couleur accentuée */
 }
 
-/* --- SECTION COMPÉTENCES --- */
+
+/* =====================================================
+SECTION COMPÉTENCES
+=====================================================
+*/
 .skills-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 25px; /* Augmenté l'espace */
     margin-top: 2rem;
 }
 
 .skill-card {
-    background: var(--secondary-color);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 30px; /* Plus de padding */
+    border-radius: 12px; /* Plus arrondi */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Ombre douce */
     width: 300px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .skill-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px); /* Meilleur effet de soulèvement */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .skill-card i {
-    font-size: 3rem;
-    color: var(--primary-color);
+    font-size: 3.5rem; /* Icône plus grande */
+    color: var(--accent-color); /* Utilise la couleur accentuée */
     margin-bottom: 1rem;
 }
 
-/* --- SECTION PROJETS --- */
+
+/* =====================================================
+SECTION PROJETS
+=====================================================
+*/
+.projects-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 2rem;
+}
+
 .project-card {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 25px;
-    border-radius: 8px;
+    background-color: white;
+    border-radius: 10px; 
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+    transition: box-shadow 0.3s ease;
+    width: 350px; /* Taille fixée pour l'uniformité */
     text-align: left;
-    margin: 2rem auto;
-    max-width: 800px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.project-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); 
 }
 
 .project-card h3 {
-    color: var(--primary-color);
+    color: var(--accent-color); /* Titre du projet en couleur accentuée */
 }
 
 .project-card p.stack {
     margin-top: 1rem;
-    font-style: italic;
-    opacity: 0.8;
+    font-size: 0.9rem;
+    opacity: 0.7;
 }
 
 .project-link {
@@ -203,7 +286,10 @@ a {
     font-weight: bold;
 }
 
-/* --- FORMULAIRE DE CONTACT --- */
+/* =====================================================
+FORMULAIRE DE CONTACT
+=====================================================
+*/
 .contact-form {
     max-width: 600px;
     margin: 2rem auto 0;
@@ -219,7 +305,7 @@ a {
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 100%;
-    font-family: var(--font-family);
+    font-family: var(--font-body);
 }
 
 .contact-form textarea {
@@ -232,31 +318,64 @@ footer {
     background: var(--dark-color);
     color: white;
     text-align: center;
-    padding: 1rem;
+    padding: 1.5rem; /* Plus grand */
     font-size: 0.9rem;
 }
 
-/* --- RESPONSIVE MOBILE --- */
+/* =====================================================
+RESPONSIVE MOBILE
+=====================================================
+*/
 @media (max-width: 768px) {
     .section {
         padding: 2rem 5%;
     }
+    
+    /* Structure asymétrique désactivée pour le mobile */
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        min-height: 70vh;
+        padding-top: 80px;
+    }
+
+    .hero-content, .hero-visual {
+        width: 100%;
+        text-align: center;
+    }
+    .hero-visual {
+        justify-content: center;
+        margin-top: 20px;
+    }
     .hero-content h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
-    .hero-content p {
-        font-size: 1rem;
+    #typewriter {
+        font-size: 2.5rem;
     }
+    
     .skills-grid {
         flex-direction: column;
     }
     .skill-card {
         width: 100%;
     }
+    
+    /* Navigation: centrer tout en haut */
     #navbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .nav-links {
         text-align: center;
+        margin-top: 5px;
     }
     #navbar a {
         margin: 0 10px;
+    }
+    #navbar.scrolled {
+        /* Garde le fond blanc au défilement */
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 }
