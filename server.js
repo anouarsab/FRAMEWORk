@@ -1,34 +1,33 @@
-// 1. Charger les dépendances
+// 1. Charger les dépendances (Ajoutez 'cors')
 const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose'); 
+const cors = require('cors'); // <--- ASSUREZ-VOUS QUE CELA EST LÀ
 
 // Charger les variables d'environnement
 dotenv.config(); 
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Utilisez 5000 comme configuré dans .env
+const PORT = process.env.PORT || 5000;
 
-// --- Connexion à MongoDB ---
-const MONGO_URI = process.env.MONGO_URI;
+// --- DÉBUT : Configuration CORS ---
+// L'URL de votre site Front-end sur GitHub Pages
+const allowedOrigin = 'https://anouarsab.github.io'; 
 
-mongoose.connect(MONGO_URI)
-    .then(() => console.log('✅ MongoDB connecté avec succès !'))
-    .catch(err => console.error('❌ Erreur de connexion MongoDB :', err));
-    
-// --- Modèle de Schéma pour le Contact ---
-const ContactSchema = new mongoose.Schema({
-    nom: { type: String, required: true },
-    email: { type: String, required: true },
-    message: { type: String, required: true },
-    date: { type: Date, default: Date.now }
-});
-
-const ContactMessage = mongoose.model('ContactMessage', ContactSchema);
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Autorise si l'origine est autorisée OU si c'est une requête sans origine (comme Postman/Thunder Client)
+    if (origin === allowedOrigin || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'POST,GET', // N'autorise que les méthodes utilisées (GET pour l'accueil, POST pour le formulaire)
+};
 
 // 2. Middleware
-app.use(cors()); 
+app.use(cors(corsOptions)); // <--- UTILISEZ LA NOUVELLE CONFIGURATION
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 
