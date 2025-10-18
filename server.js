@@ -1,40 +1,45 @@
 // server.js - Fichier principal de l'application Express/Node.js
 
 const express = require('express');
-const cors = require('cors'); // Import de la librairie CORS
+const cors = require('cors'); 
+const mongoose = require('mongoose'); // 1. IMPORT MONGOOSE
 const app = express();
 const port = process.env.PORT || 3000;
 
 // URL de votre Front-end sur GitHub Pages.
-// C'est l'URL que le serveur doit autoriser.
 const FRONTEND_ORIGIN = 'https://anouarsab.github.io'; 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio'; // 2. URI DE CONNEXION (Utilisez process.env.MONGO_URI sur Vercel !)
 
 // --- Configuration CORS ---
 const corsOptions = {
-    // 1. Définir l'origine autorisée pour les requêtes (votre portfolio)
     origin: FRONTEND_ORIGIN, 
-    
-    // 2. Définir les méthodes HTTP autorisées (POST est obligatoire pour le formulaire)
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    
-    // 3. Permettre au serveur d'envoyer les en-têtes d'état de succès pour les requêtes OPTIONS
     optionsSuccessStatus: 204 
 };
 
+// --- CONNEXION MONGOOSE ---
+mongoose.connect(MONGO_URI)
+    .then(() => console.log('Connexion MongoDB réussie !'))
+    .catch(err => console.error('Erreur de connexion MongoDB:', err));
+
+// --- SCHÉMA ET MODÈLE DE MESSAGE ---
+const messageSchema = new mongoose.Schema({
+    nom: { type: String, required: true },
+    email: { type: String, required: true },
+    message: { type: String, required: true },
+    date: { type: Date, default: Date.now }
+});
+
+const Message = mongoose.model('Message', messageSchema);
+
 // --- MIDDLEWARES ---
-
-// Appliquer la configuration CORS à toutes les routes
 app.use(cors(corsOptions));
-
-// Middleware pour parser le corps des requêtes en JSON (nécessaire pour req.body)
 app.use(express.json());
-
 
 // =======================================================
 // ROUTES DE L'APPLICATION
 // =======================================================
 
-// Route de test simple (GET)
 app.get('/', (req, res) => {
     res.status(200).send('API de Mikesonna en ligne ! Prête pour le contact.');
 });
@@ -48,26 +53,24 @@ app.post('/contact', async (req, res) => {
     }
 
     try {
-        // ------------------------------------------------------------------
-        // *** LOGIQUE À INTÉGRER ICI ***
-        // Si vous utilisez MongoDB/Mongoose, la logique d'enregistrement va ici.
-        // Si vous utilisez Nodemailer, la logique d'envoi d'email va ici.
-        // ------------------------------------------------------------------
+        // 3. LOGIQUE D'ENREGISTREMENT DANS MONGO DB
+        const newMessage = new Message({ nom, email, message });
+        await newMessage.save();
 
-        // Simulation de l'enregistrement et de l'envoi
-        console.log(`Nouveau message reçu: Nom: ${nom}, Email: ${email}`);
+        console.log(`Nouveau message enregistré : ${nom} (${email})`);
+
+        // Si vous avez Nodemailer, la logique d'envoi d'email irait ici
         
-        // Envoi de la réponse de succès au Front-end
         res.status(200).json({ 
             success: true, 
             message: 'Message envoyé et enregistré avec succès !' 
         });
 
     } catch (error) {
-        console.error('Erreur lors du traitement du message:', error);
+        console.error('Erreur lors de l\'enregistrement du message dans MongoDB:', error);
         res.status(500).json({ 
             success: false, 
-            message: 'Erreur serveur interne. Contactez l\'administrateur.' 
+            message: 'Erreur serveur interne lors de l\'enregistrement. Contactez l\'administrateur.' 
         });
     }
 });
@@ -75,13 +78,10 @@ app.post('/contact', async (req, res) => {
 
 // =======================================================
 // DÉMARRAGE DU SERVEUR
-// IMPORTANT : Vercel n'utilise pas 'app.listen' mais exporte 'module.exports = app'
-// Nous conservons app.listen pour les tests en local.
 // =======================================================
 
 app.listen(port, () => {
     console.log(`Serveur Express démarré sur le port ${port}`);
 });
 
-// Pour Vercel, l'exportation du module est nécessaire au bon fonctionnement.
 module.exports = app; 
