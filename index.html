@@ -2,144 +2,107 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <!-- Configuration essentielle pour le responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <meta name="description" content="Portfolio de Mikesonna, Développeur Web Full-Stack. Découvrez mes projets en React, Node.js et Express.">
-    
     <title>Portfolio - Mikesonna Dev | Développeur Web Full-Stack</title>
-    
-    <!-- 1. Police d'écriture moderne (Poppins) -->
+
+    <!-- Police Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- 2. Feuille de style principale (s'assurer du chemin relatif) -->
+    <!-- CSS principal -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- 3. Font Awesome pour les icônes (menu, compétences, etc.) -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-    <!-- ======================================================= -->
-    <!-- HEADER & NAVBAR (Fixe et Responsive) -->
-    <!-- ======================================================= -->
-    <header>
-        <nav id="navbar">
-            <a href="#accueil" class="logo">Mikesonna Dev</a>
-            
-            <!-- Bouton Hamburger (pour Mobile) -->
-            <button class="menu-toggle" aria-label="Ouvrir le menu">
-                <i class="fas fa-bars" id="menu-icon"></i>
-            </button>
-            
-            <div class="nav-links">
-                <a href="#accueil" class="nav-item active">Accueil</a> 
-                <a href="#competences" class="nav-item">Compétences</a>
-                <a href="#projets" class="nav-item">Projets</a>
-                <a href="#contact" class="nav-item">Contact</a>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <!-- ======================================================= -->
-        <!-- SECTION ACCUEIL (HERO) -->
-        <!-- Correction de la hiérarchie et du texte pour un meilleur impact visuel et SEO -->
-        <!-- ======================================================= -->
-        <section id="accueil" class="hero">
-            <div class="container reveal">
-                <!-- Sous-titre descriptif (petit) -->
-                <p class="subtitle">Bonjour, je suis Mikesonna, développeur Full-Stack.</p> 
-                
-                <!-- Titre principal (H1) - L'élément le plus important pour Google -->
-                <h1>Je Crée des Solutions Web Modernes et Performantes.</h1>
-                
-                <!-- Texte Typewriter (H2) - Pour l'effet dynamique et la phrase d'accroche -->
-                <h2 id="typewriter"></h2>
-                
-                <p>Expertise complète en JavaScript, React, Node.js et bases de données NoSQL.</p>
-
-                <a href="#projets" class="button primary">VOIR MES PROJETS</a>
-            </div>
-        </section>
-
-        <!-- ======================================================= -->
-        <!-- SECTION COMPÉTENCES -->
-        <!-- ======================================================= -->
-        <section id="competences" class="competences">
-            <div class="container">
-                <h2 class="reveal">Mes Compétences Techniques</h2>
-                <div class="skills-grid">
-                    
-                    <div class="skill-card reveal">
-                        <i class="fab fa-react fa-3x" style="color: #61DAFB;"></i>
-                        <h3>Front-end (React/JS)</h3>
-                        <p>Maîtrise de React, Vanilla JS, HTML/CSS modernes, et développement d'interfaces responsives.</p>
-                    </div>
-
-                    <div class="skill-card reveal">
-                        <i class="fas fa-server fa-3x" style="color: #4CAF50;"></i>
-                        <h3>Back-end (Node/Express)</h3>
-                        <p>Développement d'APIs RESTful avec Node.js, Express, et gestion de bases de données NoSQL (MongoDB).</p>
-                    </div>
-
-                    <div class="skill-card reveal">
-                        <i class="fab fa-git-alt fa-3x" style="color: #F05033;"></i>
-                        <h3>Outils & Workflow</h3>
-                        <p>Utilisation de Git, GitHub, et maîtrise des outils de déploiement (Vercel, Netlify) et CI/CD.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ======================================================= -->
-        <!-- SECTION PROJETS -->
-        <!-- ======================================================= -->
-        <section id="projets" class="projets">
-            <div class="container">
-                <h2 class="reveal">Projets Réalisés</h2>
-                <div class="projects-grid">
-                    
-                    <div class="project-card reveal">
-                        <h3>Projet 1: E-commerce "TechShop"</h3>
-                        <p>Application de vente en ligne complète construite avec MERN stack, incluant paiements sécurisés et système d'avis.</p>
-                        <a href="#" class="button secondary">Voir la démo</a>
-                    </div>
-                    
-                    <div class="project-card reveal">
-                        <h3>Projet 2: Outil de Chat Temps Réel</h3>
-                        <p>Application monopage (SPA) utilisant WebSockets pour une communication instantanée entre utilisateurs.</p>
-                        <a href="#" class="button secondary">Voir le code</a>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- ======================================================= -->
-        <!-- SECTION CONTACT -->
-        <!-- ======================================================= -->
-        <section id="contact" class="contact">
-            <div class="container">
-                <h2 class="reveal">Entrons en Contact</h2>
-                <p class="reveal">Je suis ouvert aux opportunités professionnelles. Envoyez-moi un message pour discuter de votre projet.</p>
-                <form class="contact-form reveal">
-                    <input type="text" placeholder="Nom Complet" required>
-                    <input type="email" placeholder="Votre Email" required>
-                    <textarea placeholder="Votre Message Détaillé" rows="6" required></textarea>
-                    <button type="submit" class="button primary">Envoyer le message</button>
-                    <p class="message-status"></p>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>Conçu et développé par Mikesonna Dev. | &copy; 2024</p>
+<header>
+    <nav id="navbar">
+        <a href="#accueil" class="logo">Mikesonna Dev</a>
+        <button class="menu-toggle" aria-label="Ouvrir le menu">
+            <i class="fas fa-bars" id="menu-icon"></i>
+        </button>
+        <div class="nav-links">
+            <a href="#accueil" class="nav-item active">Accueil</a> 
+            <a href="#competences" class="nav-item">Compétences</a>
+            <a href="#projets" class="nav-item">Projets</a>
+            <a href="#contact" class="nav-item">Contact</a>
         </div>
-    </footer>
+    </nav>
+</header>
 
-    <!-- 4. Script JavaScript (doit être le dernier élément du body) -->
-    <script src="script.js"></script>
+<main>
+    <section id="accueil" class="hero">
+        <div class="container reveal">
+            <p class="subtitle">Bonjour, je suis Mikesonna, développeur Full-Stack.</p> 
+            <h1>Je Crée des Solutions Web Modernes et Performantes.</h1>
+            <h2 id="typewriter"></h2>
+            <p>Expertise complète en JavaScript, React, Node.js et bases de données NoSQL.</p>
+            <a href="#projets" class="button primary">VOIR MES PROJETS</a>
+        </div>
+    </section>
+
+    <section id="competences" class="competences">
+        <div class="container">
+            <h2 class="reveal">Mes Compétences Techniques</h2>
+            <div class="skills-grid">
+                <div class="skill-card reveal">
+                    <i class="fab fa-react fa-3x" style="color: #61DAFB;"></i>
+                    <h3>Front-end (React/JS)</h3>
+                    <p>Maîtrise de React, Vanilla JS, HTML/CSS modernes, et développement d'interfaces responsives.</p>
+                </div>
+                <div class="skill-card reveal">
+                    <i class="fas fa-server fa-3x" style="color: #4CAF50;"></i>
+                    <h3>Back-end (Node/Express)</h3>
+                    <p>Développement d'APIs RESTful avec Node.js, Express, et gestion de bases de données NoSQL (MongoDB).</p>
+                </div>
+                <div class="skill-card reveal">
+                    <i class="fab fa-git-alt fa-3x" style="color: #F05033;"></i>
+                    <h3>Outils & Workflow</h3>
+                    <p>Utilisation de Git, GitHub, et maîtrise des outils de déploiement (Vercel, Netlify) et CI/CD.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projets" class="projets">
+        <div class="container">
+            <h2 class="reveal">Projets Réalisés</h2>
+            <div class="projects-grid">
+                <div class="project-card reveal">
+                    <h3>Projet 1: E-commerce "TechShop"</h3>
+                    <p>Application de vente en ligne complète construite avec MERN stack, incluant paiements sécurisés et système d'avis.</p>
+                    <a href="#" class="button secondary">Voir la démo</a>
+                </div>
+                <div class="project-card reveal">
+                    <h3>Projet 2: Outil de Chat Temps Réel</h3>
+                    <p>Application monopage (SPA) utilisant WebSockets pour une communication instantanée entre utilisateurs.</p>
+                    <a href="#" class="button secondary">Voir le code</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="reveal">Entrons en Contact</h2>
+            <p class="reveal">Je suis ouvert aux opportunités professionnelles. Envoyez-moi un message pour discuter de votre projet.</p>
+            <form id="contact-form" class="contact-form reveal">
+                <input type="text" name="nom" placeholder="Nom Complet" required>
+                <input type="email" name="email" placeholder="Votre Email" required>
+                <textarea name="message" placeholder="Votre Message Détaillé" rows="6" required></textarea>
+                <button type="submit" class="button primary">Envoyer le message</button>
+                <p class="message-status"></p>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>Conçu et développé par Mikesonna Dev. | &copy; 2024</p>
+    </div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
