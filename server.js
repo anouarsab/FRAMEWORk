@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 // -----------------------------
 // CONFIGURATION CORS
 // -----------------------------
-const FRONTEND_ORIGIN = 'https://anouarsab.github.io'; // Change selon ton site
+const FRONTEND_ORIGIN = 'https://github.com/anouarsab/FRAMEWORk.git' // Change selon ton site //
 
 const corsOptions = {
     origin: FRONTEND_ORIGIN,
