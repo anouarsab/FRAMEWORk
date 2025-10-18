@@ -1,381 +1,388 @@
-/*
-=====================================================
-STYLES GLOBALES ET VARIABLES
-=====================================================
+/* / ======================================================= /
+/ STYLES GLOBALES & VARIABLES
+/ ======================================================= /
 */
-:root {
-    /* Couleurs de base */
-    --primary-color: #007bff; /* Bleu (Gardé pour les liens secondaires si besoin) */
-    --secondary-color: #f8f9fa; /* Arrière-plan clair */
-    --dark-color: #343a40; /* Couleur pour les arrière-plans sombres */
-    
-    /* Couleur d'Accent Vif (Orange/Mandarine) */
-    --accent-color: #ff5722; 
-    
-    /* Couleurs du texte et du fond */
-    --text-color: #333; /* Texte sombre */
-    --background-color: #f9f9f9; /* Arrière-plan général très clair */
 
-    /* Typographie Moderne (Nécessite les liens dans index.html) */
-    --font-body: 'Roboto', sans-serif;
-    --font-heading: 'Montserrat', sans-serif;
+:root {
+    --primary-color: #007bff; /* Bleu/Cyan pour l'arrière-plan du Hero */
+    --accent-color: #ff6a00;  /* Orange Vif (Couleur principale d'accent) */
+    --text-color: #333;
+    --light-bg: #f5f5f5; /* Fond clair pour les sections alternées */
+    --dark-color: #2c3e50; /* Couleur pour le texte et le footer */
+    --shadow-light: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* Global Reset et Typographie */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: var(--font-body); /* Roboto pour le corps */
-    line-height: 1.6;
+    /* Nouvelle police : Assurez-vous d'avoir le lien dans index.html (<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">) */
+    font-family: 'Poppins', sans-serif;
     color: var(--text-color);
-    background-color: var(--background-color);
+    background-color: white;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+    overflow-x: hidden; /* Prévient le défilement horizontal */
 }
 
-h1, h2, h3 {
-    margin-bottom: 1rem;
+h1, h2 {
     color: var(--dark-color);
-    font-family: var(--font-heading); /* Montserrat pour les titres */
+    margin-bottom: 25px;
     font-weight: 700;
 }
 
-a {
-    text-decoration: none;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-.section {
-    padding: 4rem 10%;
+h2 {
+    font-size: 2.2rem;
     text-align: center;
+    margin-bottom: 50px;
 }
 
-/* --- Boutons (btn) et Formulaire --- */
-.btn, .contact-form button {
-    /* Style de bouton accentué */
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 12px 25px; /* Augmenté légèrement pour l'impact */
-    cursor: pointer;
-    border-radius: 5px; 
-    font-size: 16px;
-    font-weight: 700;
-    transition: background-color 0.3s ease, transform 0.2s ease; 
-    text-transform: uppercase;
-    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3); /* Ombre légère de couleur */
-}
+/* ======================================================= */
+/* NAVBAR STYLING (Optimisé pour la publication) */
+/* ======================================================= */
 
-.btn:hover, .contact-form button:hover {
-    background-color: #e64a19; 
-    transform: translateY(-2px); /* Léger soulèvement */
-    box-shadow: 0 6px 15px rgba(255, 87, 34, 0.5); /* Ombre plus marquée au survol */
-}
-
-.dark-bg {
-    background-color: var(--dark-color);
-    color: white;
-}
-.dark-bg h2 {
-    color: white;
-}
-
-/* =====================================================
-BARRE DE NAVIGATION FIXE (Amélioration structurelle)
-=====================================================
-*/
 #navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 15px 10%;
-    background-color: transparent; 
-    box-shadow: none;
-    z-index: 1000;
-    transition: background-color 0.4s, box-shadow 0.4s;
-    
-    /* Flexbox pour aligner Logo/Nom à gauche et Liens à droite */
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
+    padding: 20px 5%; /* Plus d'espace pour l'esthétique */
+    background-color: transparent; 
+    z-index: 1000;
+    transition: all 0.4s ease-in-out; 
 }
 
-.logo {
-    color: white;
-    font-size: 1.5rem;
+#navbar .logo {
+    font-size: 1.6rem;
     font-weight: 700;
-    font-family: var(--font-heading);
-    transition: color 0.4s;
-}
-
-#navbar.scrolled .logo {
-    color: var(--dark-color);
+    color: white; 
+    text-decoration: none;
+    transition: color 0.4s ease;
 }
 
 .nav-links {
-    /* Conteneur pour les liens */
-    text-align: right; 
+    display: flex;
+    gap: 35px; /* Plus d'espace entre les liens */
 }
 
-#navbar a {
-    color: white;
-    margin-left: 20px;
-    font-weight: bold;
-    transition: color 0.4s;
-    padding-bottom: 5px; /* Espace pour la bordure active */
+.nav-links a {
+    color: white; 
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 0;
+    font-size: 1rem;
+    transition: color 0.3s ease, border-bottom 0.3s ease; 
 }
 
-#navbar.scrolled a {
-    color: var(--dark-color); 
+/* État ACTIF (Soulignement élégant de la section en cours) */
+.nav-links a.active {
+    color: var(--accent-color) !important; 
+    border-bottom: 3px solid var(--accent-color); 
 }
 
-.navbar a.active {
-    color: var(--accent-color) !important; /* Force la couleur sur les deux états */
-    border-bottom: 2px solid var(--accent-color);
+/* Effet au survol */
+.nav-links a:hover {
+    color: var(--accent-color);
 }
 
+/* État SCROLLED (Après défilement) */
 #navbar.scrolled {
     background-color: white; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    padding: 12px 5%; /* Légèrement plus compact */
 }
 
-/* =====================================================
-HEADER / HERO (Design Asymétrique)
-=====================================================
-*/
+#navbar.scrolled .logo,
+#navbar.scrolled .nav-links a {
+    color: var(--dark-color); /* Le texte devient sombre */
+}
+
+/* Assurez-vous que l'état actif reste orange sur fond blanc */
+#navbar.scrolled .nav-links a.active {
+    color: var(--accent-color); 
+}
+
+/* ======================================================= */
+/* GENERAL LAYOUT & SECTIONS */
+/* ======================================================= */
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+section {
+    padding: 100px 0; /* Padding augmenté pour un meilleur espacement */
+    /* min-height: 100vh retiré pour permettre des sections plus courtes */
+}
+
+/* Section Héro (Accueil) */
 .hero {
-    background-color: var(--dark-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #17a2b8 100%);
     color: white;
-    min-height: 80vh; 
-    
-    /* Configuration Flexbox pour l'asymétrie */
-    display: flex;
+    text-align: center;
+    display: flex; /* Utilisation de flex pour centrer verticalement */
     align-items: center;
-    justify-content: space-between; 
-    text-align: left; /* Aligne le texte à gauche */
-    padding: 6rem 10% 4rem; /* Plus d'espace en haut */
-}
-
-.hero-content {
-    width: 60%; /* Texte prend 60% */
-    max-width: 700px;
-    position: relative; 
-    z-index: 2; 
-}
-
-.hero-visual {
-    width: 40%; /* Visuel prend 40% */
-    display: flex;
-    justify-content: flex-end; 
-    align-items: center;
-}
-
-.profile-img {
-    width: 250px; 
-    height: 250px;
-    border-radius: 50%; 
-    object-fit: cover;
-    border: 5px solid var(--accent-color); /* Bordure colorée */
-    box-shadow: 0 0 20px rgba(255, 87, 34, 0.6); /* Effet d'éclat doux */
-}
-
-.hero-content h1 {
-    font-size: 3.5rem;
-    color: white; 
-    margin-bottom: 0.5rem;
-}
-
-.hero-content p {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    color: rgba(255, 255, 255, 0.9); /* Texte légèrement atténué */
-}
-
-/* --- EFFET MACHINE À ÉCRIRE (Curseur accentué) --- */
-#typewriter {
-    color: var(--accent-color);
-    font-size: 3.5rem; /* Doit être la même taille que le H1 si inclus */
-    border-right: 3px solid var(--accent-color); 
-    padding-right: 5px;
-    display: inline-block;
-}
-
-@keyframes blink-caret {
-    from, to { border-color: transparent; }
-    50% { border-color: var(--accent-color); } /* Curseur avec couleur accentuée */
-}
-
-
-/* =====================================================
-SECTION COMPÉTENCES
-=====================================================
-*/
-.skills-grid {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 25px; /* Augmenté l'espace */
-    margin-top: 2rem;
+    min-height: 100vh; /* Garder 100vh ici */
+    padding-top: 0;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    color: white;
+    font-weight: 700;
+}
+
+.hero h2 {
+    margin-top: -15px;
+}
+
+.hero #typewriter {
+    font-size: 2.5rem;
+    color: var(--accent-color); 
+    border-right: 3px solid white; /* Curseur plus visible */
+    padding-right: 8px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    font-weight: 300;
+}
+
+.hero #typewriter.finished-typing {
+    border-right: none;
+}
+
+/* Boutons */
+.button.primary {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 50px; /* Boutons très arrondis pour un look moderne */
+    text-decoration: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 30px;
+    box-shadow: 0 4px 10px rgba(255, 106, 0, 0.3);
+}
+
+.button.primary:hover {
+    background-color: #e55c00; 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 106, 0, 0.5);
+}
+
+/* ======================================================= */
+/* SKILLS SECTION (Nouveau look) */
+/* ======================================================= */
+
+.competences {
+    background-color: var(--light-bg); /* Donne de la profondeur */
+    text-align: center;
+}
+
+.skills-grid {
+    display: grid;
+    /* Responsive grid: 3 colonnes sur desktop, s'adapte à 1 ou 2 sur mobile */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+    padding: 20px;
 }
 
 .skill-card {
-    background: white;
-    padding: 30px; /* Plus de padding */
-    border-radius: 12px; /* Plus arrondi */
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); /* Ombre douce */
-    width: 300px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: var(--shadow-light); /* Utilisation de la variable d'ombre */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .skill-card:hover {
-    transform: translateY(-8px); /* Meilleur effet de soulèvement */
+    transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.skill-card i {
-    font-size: 3.5rem; /* Icône plus grande */
-    color: var(--accent-color); /* Utilise la couleur accentuée */
-    margin-bottom: 1rem;
+.skill-card h3 {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-weight: 600;
 }
 
+/* ======================================================= */
+/* PROJETS SECTION */
+/* ======================================================= */
 
-/* =====================================================
-SECTION PROJETS
-=====================================================
-*/
+.projets {
+    text-align: center;
+}
+
 .projects-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    margin-top: 2rem;
+    margin-top: 40px;
+}
+/* Ajoutez ici plus tard le style pour vos cartes de projets (.project-card) */
+
+
+/* ======================================================= */
+/* FORMULAIRE DE CONTACT */
+/* ======================================================= */
+
+.contact {
+    background-color: var(--light-bg);
+}
+.contact .container {
+    max-width: 700px; /* Formulaire centré et plus étroit */
+    text-align: center;
 }
 
-.project-card {
-    background-color: white;
-    border-radius: 10px; 
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
-    transition: box-shadow 0.3s ease;
-    width: 350px; /* Taille fixée pour l'uniformité */
-    text-align: left;
-}
-
-.project-card:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); 
-}
-
-.project-card h3 {
-    color: var(--accent-color); /* Titre du projet en couleur accentuée */
-}
-
-.project-card p.stack {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-.project-link {
-    display: inline-block;
-    margin-right: 15px;
-    margin-top: 10px;
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-/* =====================================================
-FORMULAIRE DE CONTACT
-=====================================================
-*/
 .contact-form {
-    max-width: 600px;
-    margin: 2rem auto 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    padding: 40px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    margin-top: 30px;
 }
 
-.contact-form input[type="text"],
-.contact-form input[type="email"],
+.contact-form input,
 .contact-form textarea {
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     width: 100%;
-    font-family: var(--font-body);
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(255, 106, 0, 0.2);
+    outline: none;
 }
 
 .contact-form textarea {
     resize: vertical;
-    min-height: 150px;
 }
 
-/* --- FOOTER --- */
+.message-status {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+/* ======================================================= */
+/* FOOTER */
+/* ======================================================= */
+
 footer {
-    background: var(--dark-color);
-    color: white;
+    background-color: var(--dark-color);
+    color: #b5b5b5;
     text-align: center;
-    padding: 1.5rem; /* Plus grand */
+    padding: 30px 0;
     font-size: 0.9rem;
 }
 
-/* =====================================================
-RESPONSIVE MOBILE
-=====================================================
-*/
+/* ======================================================= */
+/* SCROLL REVEAL (Animation au défilement) */
+/* ======================================================= */
+
+.reveal {
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ======================================================= */
+/* MEDIA QUERIES (Responsiveness) */
+/* ======================================================= */
+
+/* Styles pour les petits écrans (tablettes et mobiles) */
 @media (max-width: 768px) {
-    .section {
-        padding: 2rem 5%;
-    }
     
-    /* Structure asymétrique désactivée pour le mobile */
-    .hero {
-        flex-direction: column;
-        text-align: center;
-        min-height: 70vh;
-        padding-top: 80px;
+    /* Typographie */
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero #typewriter {
+        font-size: 1.8rem;
+    }
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
     }
 
-    .hero-content, .hero-visual {
-        width: 100%;
-        text-align: center;
+    /* Sections */
+    section {
+        padding: 80px 0;
     }
-    .hero-visual {
-        justify-content: center;
-        margin-top: 20px;
-    }
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-    #typewriter {
-        font-size: 2.5rem;
-    }
-    
-    .skills-grid {
-        flex-direction: column;
-    }
-    .skill-card {
-        width: 100%;
-    }
-    
-    /* Navigation: centrer tout en haut */
-    #navbar {
-        flex-direction: column;
-        gap: 10px;
-    }
+
+    /* Navbar : Préparation pour le menu hamburger (doit être codé dans script.js) */
     .nav-links {
+        /* Masquer la navigation pour le mode mobile */
+        display: none; 
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%; /* Plein écran pour le menu */
+        background-color: var(--dark-color);
+        padding-top: 100px;
+        align-items: center;
+        gap: 0; /* Pas d'espace entre les liens empilés */
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .nav-links.open {
+        display: flex; /* Afficher le menu en mode ouvert */
+    }
+
+    .nav-links a {
+        color: white !important;
+        width: 100%;
         text-align: center;
-        margin-top: 5px;
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 1.2rem;
     }
-    #navbar a {
-        margin: 0 10px;
+    
+    .nav-links a:last-child {
+        border-bottom: none;
     }
-    #navbar.scrolled {
-        /* Garde le fond blanc au défilement */
-        padding-top: 10px;
-        padding-bottom: 10px;
+
+    /* Bouton hamburger (à inclure dans index.html) */
+    .menu-toggle {
+        display: block; /* Afficher le bouton menu */
+        font-size: 2rem;
+        color: white;
+        cursor: pointer;
+    }
+    #navbar.scrolled .menu-toggle {
+        color: var(--dark-color);
+    }
+    
+    #navbar {
+        padding: 15px 5%; /* Padding unifié pour mobile */
     }
 }
