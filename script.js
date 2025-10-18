@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    const VERCEL_API_URL = 'https://framewo-jshzwqldu-anouarsabs-projects.vercel.app'; 
+    const VERCEL_API_URL = 'https://framewo-o3esye80k-anouarsabs-projects.vercel.app'; 
 
     const SECTIONS = document.querySelectorAll('main section');
     const NAV_ITEMS = document.querySelectorAll('.nav-item');
