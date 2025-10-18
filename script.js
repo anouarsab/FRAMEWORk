@@ -1,5 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // ⚠️ CORRECTION : La variable doit être définie au début de la portée
+    // CONFIRMEZ QUE CETTE URL EST EXACTEMENT CELLE DE VOTRE DÉPLOIEMENT VERCEL
+    const VERCEL_API_URL = 'https://framewo-jshzwqldu-anouarsabs-projects.vercel.app'; 
+
+    // --- Configuration Générale ---
+    const SECTIONS = document.querySelectorAll('main section');
+    const NAV_ITEMS = document.querySelectorAll('.nav-item');
+    
+    // Éléments du Menu Mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const menuIcon = document.getElementById('menu-icon');
+
     // --- 1. FONCTION : EFFET MACHINE À ÉCRIRE (Typewriter) ---
     const typewriterElement = document.getElementById('typewriter');
     // Le texte dynamique que vous souhaitez afficher
@@ -39,9 +52,53 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             navbar.classList.remove('scrolled');
         }
+
+        // GESTION DE LA CLASSE 'ACTIVE' SUR LES LIENS
+        let current = 'accueil'; 
+
+        SECTIONS.forEach(section => {
+            const sectionTop = section.offsetTop; 
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= sectionTop - sectionHeight / 2) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        NAV_ITEMS.forEach(item => {
+            item.classList.remove('active');
+            if (item.href.includes(current)) {
+                item.classList.add('active');
+            }
+        });
     }
 
-    // --- 3. FONCTION : GESTION DU FORMULAIRE DE CONTACT ---
+    // --- 3. GESTION DU MENU MOBILE (Hamburger) ---
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            // Change l'icône : hamburger <-> croix
+            if (navLinks.classList.contains('open')) {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            } else {
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Ferme le menu après un clic sur un lien (pour le mode mobile)
+        NAV_ITEMS.forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navLinks.classList.remove('open');
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+        });
+    }
+    
+    // --- 4. FONCTION : GESTION DU FORMULAIRE DE CONTACT (Final) ---
     const contactForm = document.querySelector('.contact-form');
     const messageStatus = document.querySelector('.message-status');
     
@@ -55,13 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = contactForm.querySelector('input[type="email"]').value;
             const message = contactForm.querySelector('textarea').value;
 
-            // --- Configuration du Timeout ---
-            const timeout = 10000; // 10 secondes
+            const timeout = 10000; 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
 
             try {
-                // Utilisation de la route simplifiée /contact
+                // Utilisation de l'URL Vercel qui est maintenant définie au début du script
                 const response = await fetch(`${VERCEL_API_URL}/contact`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
