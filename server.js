@@ -1,117 +1,73 @@
-// server.js
+// server.js - Fichier principal de l'application Express/Node.js
 
-// 1. Charger les dépendances
 const express = require('express');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose'); 
-const cors = require('cors');
-// Si vous n'avez pas créé logger.js, vous pouvez commenter la ligne ci-dessous
-const logger = require('./logger'); 
-
-// Charger les variables d'environnement (Doit être en premier)
-dotenv.config(); 
-
+const cors = require('cors'); // Import de la librairie CORS
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-// =======================================================
-// DÉCLARATION DU MODÈLE MONGOOSE
-// =======================================================
+// URL de votre Front-end sur GitHub Pages.
+// C'est l'URL que le serveur doit autoriser.
+const FRONTEND_ORIGIN = 'https://anouarsab.github.io'; 
 
-// Schéma et Modèle simple pour les messages de contact
-const contactSchema = new mongoose.Schema({
-    nom: { type: String, required: true },
-    email: { type: String, required: true },
-    message: { type: String, required: true },
-    date: { type: Date, default: Date.now }
-});
-
-const ContactMessage = mongoose.model('ContactMessage', contactSchema);
-
-// =======================================================
-// CONFIGURATION DE LA BASE DE DONNÉES
-// =======================================================
-mongoose.connect(process.env.MONGO_URI, {
-    // Les options d'anciennes versions sont maintenant obsolètes et sont supprimées
-})
-.then(() => logger.info('✅ Connexion MongoDB réussie !'))
-.catch(err => {
-    logger.error('❌ Erreur de connexion MongoDB:', { 
-        message: err.message, 
-        uri: process.env.MONGO_URI ? 'URI fournie' : 'URI manquante'
-    });
-    // Dans un environnement de production (comme Vercel), cette erreur est fatale.
-});
-
-
-// =======================================================
-// MIDDLEWARES
-// =======================================================
-
-// --- Configuration CORS (Temporairement large pour résoudre l'Erreur Réseau) ---
-// Vous devriez revenir à 'https://anouarsab.github.io' une fois que cela fonctionne.
+// --- Configuration CORS ---
 const corsOptions = {
-    origin: '*', // Autorise TOUTES les origines pour le test. 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-    optionsSuccessStatus: 204
+    // 1. Définir l'origine autorisée pour les requêtes (votre portfolio)
+    origin: FRONTEND_ORIGIN, 
+    
+    // 2. Définir les méthodes HTTP autorisées (POST est obligatoire pour le formulaire)
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    
+    // 3. Permettre au serveur d'envoyer les en-têtes d'état de succès pour les requêtes OPTIONS
+    optionsSuccessStatus: 204 
 };
 
+// --- MIDDLEWARES ---
+
+// Appliquer la configuration CORS à toutes les routes
 app.use(cors(corsOptions));
 
-// Middlewares pour parser les corps de requête JSON et URL-encoded
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); 
+// Middleware pour parser le corps des requêtes en JSON (nécessaire pour req.body)
+app.use(express.json());
 
 
 // =======================================================
-// ROUTES
+// ROUTES DE L'APPLICATION
 // =======================================================
 
-// Route d'accueil pour vérifier que le serveur est en ligne
+// Route de test simple (GET)
 app.get('/', (req, res) => {
-    res.status(200).send('Serveur de Portfolio en ligne ! Le Back-end et MongoDB sont OK.');
+    res.status(200).send('API de Mikesonna en ligne ! Prête pour le contact.');
 });
 
-// Route pour le Formulaire de Contact (Route simplifiée: /contact)
+// Route de contact (POST) - Gère le formulaire
 app.post('/contact', async (req, res) => {
+    const { nom, email, message } = req.body;
+
+    if (!nom || !email || !message) {
+        return res.status(400).json({ success: false, message: 'Veuillez remplir tous les champs obligatoires.' });
+    }
+
     try {
-        const { nom, email, message } = req.body;
+        // ------------------------------------------------------------------
+        // *** LOGIQUE À INTÉGRER ICI ***
+        // Si vous utilisez MongoDB/Mongoose, la logique d'enregistrement va ici.
+        // Si vous utilisez Nodemailer, la logique d'envoi d'email va ici.
+        // ------------------------------------------------------------------
 
-        // 1. Validation : Champs requis
-        if (!nom || !email || !message) {
-            return res.status(400).json({ success: false, message: 'Tous les champs sont requis.' });
-        }
+        // Simulation de l'enregistrement et de l'envoi
+        console.log(`Nouveau message reçu: Nom: ${nom}, Email: ${email}`);
         
-        // 2. Validation : Format de l'email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/; 
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({ success: false, message: 'Veuillez fournir une adresse email valide.' });
-        }
-        
-        // 3. ENREGISTREMENT DANS LA BASE DE DONNÉES
-        const newMessage = new ContactMessage({ nom, email, message });
-        await newMessage.save();
-
-        logger.info(`Message de contact enregistré: ${nom} (${email})`);
-
-        // 4. Réponse envoyée au Front-end
+        // Envoi de la réponse de succès au Front-end
         res.status(200).json({ 
             success: true, 
-            message: 'Message envoyé et enregistré !',
+            message: 'Message envoyé et enregistré avec succès !' 
         });
 
     } catch (error) {
-        // En cas d'erreur Mongoose (par exemple, un problème de connexion BDD)
-        logger.error(`Erreur critique sur la route /contact: ${error.message}`, { 
-            stack: error.stack, 
-            inputData: req.body 
-        }); 
-        
-        // Réponse générique d'erreur pour le client
+        console.error('Erreur lors du traitement du message:', error);
         res.status(500).json({ 
             success: false, 
-            message: "Une erreur interne est survenue. Le problème a été enregistré pour diagnostic." 
+            message: 'Erreur serveur interne. Contactez l\'administrateur.' 
         });
     }
 });
@@ -119,7 +75,13 @@ app.post('/contact', async (req, res) => {
 
 // =======================================================
 // DÉMARRAGE DU SERVEUR
+// IMPORTANT : Vercel n'utilise pas 'app.listen' mais exporte 'module.exports = app'
+// Nous conservons app.listen pour les tests en local.
 // =======================================================
-app.listen(PORT, () => {
-    logger.info(`Serveur démarré sur le port http://localhost:${PORT}`);
+
+app.listen(port, () => {
+    console.log(`Serveur Express démarré sur le port ${port}`);
 });
+
+// Pour Vercel, l'exportation du module est nécessaire au bon fonctionnement.
+module.exports = app; 
