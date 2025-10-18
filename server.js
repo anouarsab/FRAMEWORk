@@ -5,14 +5,14 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose'); 
 const cors = require('cors');
-const logger = require('./logger'); // Importation du logger Winston
+// Si vous n'avez pas créé logger.js, vous pouvez commenter la ligne ci-dessous
+const logger = require('./logger'); 
 
 // Charger les variables d'environnement (Doit être en premier)
 dotenv.config(); 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const VERCEL_APP_URL = process.env.VERCEL_APP_URL; // Pour l'URL Vercel si besoin
 
 // =======================================================
 // DÉCLARATION DU MODÈLE MONGOOSE
@@ -32,8 +32,7 @@ const ContactMessage = mongoose.model('ContactMessage', contactSchema);
 // CONFIGURATION DE LA BASE DE DONNÉES
 // =======================================================
 mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // Les options d'anciennes versions sont maintenant obsolètes et sont supprimées
 })
 .then(() => logger.info('✅ Connexion MongoDB réussie !'))
 .catch(err => {
@@ -41,8 +40,7 @@ mongoose.connect(process.env.MONGO_URI, {
         message: err.message, 
         uri: process.env.MONGO_URI ? 'URI fournie' : 'URI manquante'
     });
-    // Arrêter le processus si la connexion échoue de manière critique
-    // process.exit(1);
+    // Dans un environnement de production (comme Vercel), cette erreur est fatale.
 });
 
 
@@ -50,20 +48,13 @@ mongoose.connect(process.env.MONGO_URI, {
 // MIDDLEWARES
 // =======================================================
 
-// --- Configuration CORS pour autoriser l'accès depuis GitHub Pages ---
-const allowedOrigin = 'https://anouarsab.github.io'; 
-
+// --- Configuration CORS (Temporairement large pour résoudre l'Erreur Réseau) ---
+// Vous devriez revenir à 'https://anouarsab.github.io' une fois que cela fonctionne.
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Autorise si l'origine est autorisée (votre site) OU si c'est une requête sans origine (Postman)
-    if (origin === allowedOrigin || !origin) {
-      callback(null, true);
-    } else {
-      logger.warn(`Tentative d'accès CORS non autorisé depuis: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: 'POST,GET',
+    origin: '*', // Autorise TOUTES les origines pour le test. 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
@@ -82,9 +73,8 @@ app.get('/', (req, res) => {
     res.status(200).send('Serveur de Portfolio en ligne ! Le Back-end et MongoDB sont OK.');
 });
 
-// Route pour le Formulaire de Contact (CORRIGÉE)
+// Route pour le Formulaire de Contact (Route simplifiée: /contact)
 app.post('/contact', async (req, res) => {
-    // Un seul bloc try/catch pour toute la logique
     try {
         const { nom, email, message } = req.body;
 
@@ -112,7 +102,7 @@ app.post('/contact', async (req, res) => {
         });
 
     } catch (error) {
-        // En cas d'erreur Mongoose ou autre erreur interne
+        // En cas d'erreur Mongoose (par exemple, un problème de connexion BDD)
         logger.error(`Erreur critique sur la route /contact: ${error.message}`, { 
             stack: error.stack, 
             inputData: req.body 
