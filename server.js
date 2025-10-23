@@ -12,15 +12,24 @@ const port = process.env.PORT || 3000;
 // -----------------------------
 // CONFIGURATION CORS
 // -----------------------------
-const FRONTEND_ORIGIN = 'https://github.com/anouarsab/FRAMEWORk.git' // Change selon ton site //
+const allowedOrigins = [
+  'https://github.com/anouarsab/FRAMEWORk.git', // ton front
+  'http://localhost:5500'        // pour test local
+];
 
-const corsOptions = {
-    origin: FRONTEND_ORIGIN,
+app.use(cors({
+    origin: function(origin, callback){
+        if(!origin) return callback(null, true); // pour Postman ou curl
+        if(allowedOrigins.indexOf(origin) === -1){
+            const msg = `CORS bloqué pour l'origine: ${origin}`;
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
     methods: ['GET', 'POST'],
-    optionsSuccessStatus: 204
-};
-
-app.use(cors(corsOptions));
+    credentials: true
+}));
+app.options('*', cors()); 
 app.use(express.json());
 
 // -----------------------------
