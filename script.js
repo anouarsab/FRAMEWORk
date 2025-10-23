@@ -3,7 +3,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // IMPORTANT : Utilisez l'URL de base de votre déploiement Vercel
-    const VERCEL_API_URL = 'https://framewo-o3esye80k-anouarsabs-projects.vercel.app'; 
+    // Mise à jour de l'URL de l'API Vercel avec la nouvelle adresse
+    const VERCEL_API_URL = 'https://framewo-fs1yjlqdy-anouarsabs-projects.vercel.app'; 
 
     const SECTIONS = document.querySelectorAll('main section');
     const NAV_ITEMS = document.querySelectorAll('.nav-item');
@@ -117,9 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout après 10 secondes
 
             try {
-                // CORRECTION: Changement de '/api/contact' à '/contact' pour correspondre à l'erreur.
-                // NOTE: Idéalement, le chemin devrait être /api/contact et le backend server.js devrait être redéployé.
-                // Mais pour que l'URL corresponde à l'erreur actuelle, nous utilisons /contact.
+                // Le chemin utilisé est /contact (et non /api/contact) pour correspondre à l'erreur vue dans la console.
                 const response = await fetch(`${VERCEL_API_URL}/contact`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
