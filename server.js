@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 // CONFIGURATION CORS
 // -----------------------------\
 const allowedOrigins = [
-  'https://github.com/anouarsab/FRAMEWORk.git', // ton front
+  'https://anouarsab.github.io', // NOUVELLE ORIGINE : L'URL où votre portfolio est hébergé
   'http://localhost:5500'        // pour test local
 ];
 
@@ -90,7 +90,7 @@ app.post('/api/contact', async (req, res) => {
                 text: `Nom: ${nom}\nEmail: ${email}\nMessage: ${message}`
             });
 
-            // CORRECTION: Ajout de la parenthèse manquante ici
+            // Ligne de correction de la parenthèse et utilisation de logger
             logger.info('Email de notification envoyé à l\'administrateur.'); 
 
         }
