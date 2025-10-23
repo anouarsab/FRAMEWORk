@@ -18,6 +18,7 @@
 <header>
     <nav id="navbar">
         <a href="#accueil" class="logo">Mikesonna Dev</a>
+        <!-- L'icône du menu hamburger, visible uniquement sur mobile grâce à style.css -->
         <button class="menu-toggle" aria-label="Ouvrir le menu">
             <i class="fas fa-bars" id="menu-icon"></i>
         </button>
@@ -32,33 +33,36 @@
 
 <main>
     <section id="accueil" class="hero">
-        <div class="container reveal">
-            <p class="subtitle">Bonjour, je suis Mikesonna, développeur Full-Stack.</p> 
-            <h1>Je Crée des Solutions Web Modernes et Performantes.</h1>
-            <h2 id="typewriter"></h2>
-            <p>Expertise complète en JavaScript, React, Node.js et bases de données NoSQL.</p>
-            <br><a href="#projets" class="button primary">VOIR MES PROJETS</a></br>
+        <div class="container">
+            <h1>Salut, je suis Mikesonna</h1>
+            <h2 id="typewriter"></h2> 
+            <a href="#contact" class="button primary">Me Contacter</a>
         </div>
     </section>
 
     <section id="competences" class="competences">
         <div class="container">
-            <h2 class="reveal">Mes Compétences Techniques</h2>
+            <h2 class="reveal">Mes Compétences</h2>
             <div class="skills-grid">
+                <!-- Compétence 1 -->
                 <div class="skill-card reveal">
-                    <i class="fab fa-react fa-3x" style="color: #61DAFB;"></i>
-                    <h3>Front-end (React/JS)</h3>
-                    <p>Maîtrise de React, Vanilla JS, HTML/CSS modernes, et développement d'interfaces responsives.</p>
+                    <h3>Frontend</h3>
+                    <p>HTML5, CSS3, JavaScript (ES6+), React, Vue.js. Expertise dans les applications monopages (SPA) et le design responsive.</p>
                 </div>
+                <!-- Compétence 2 -->
                 <div class="skill-card reveal">
-                    <i class="fas fa-server fa-3x" style="color: #4CAF50;"></i>
-                    <h3>Back-end (Node/Express)</h3>
-                    <p>Développement d'APIs RESTful avec Node.js, Express, et gestion de bases de données NoSQL (MongoDB).</p>
+                    <h3>Backend & API</h3>
+                    <p>Node.js, Express, Python (Flask/Django), PHP. Conception et développement d'API RESTful robustes et performantes.</p>
                 </div>
+                <!-- Compétence 3 -->
                 <div class="skill-card reveal">
-                    <i class="fab fa-git-alt fa-3x" style="color: #F05033;"></i>
-                    <h3>Outils & Workflow</h3>
-                    <p>Utilisation de Git, GitHub, et maîtrise des outils de déploiement (Vercel, Netlify) et CI/CD.</p>
+                    <h3>Bases de Données</h3>
+                    <p>MongoDB (NoSQL), PostgreSQL, MySQL. Modélisation de données et requêtes optimisées.</p>
+                </div>
+                <!-- Compétence 4 -->
+                <div class="skill-card reveal">
+                    <h3>DevOps & Cloud</h3>
+                    <p>Git, GitHub, Docker, CI/CD, Déploiement sur des plateformes comme Vercel et Heroku.</p>
                 </div>
             </div>
         </div>
@@ -66,11 +70,11 @@
 
     <section id="projets" class="projets">
         <div class="container">
-            <h2 class="reveal">Projets Réalisés</h2>
+            <h2 class="reveal">Projets Récents</h2>
             <div class="projects-grid">
                 <div class="project-card reveal">
-                    <h3>Projet 1: E-commerce "TechShop"</h3>
-                    <p>Application de vente en ligne complète construite avec MERN stack, incluant paiements sécurisés et système d'avis.</p>
+                    <h3>Projet 1: Plateforme E-commerce</h3>
+                    <p>Stack MERN complète, incluant l'authentification sécurisée et système d'avis.</p>
                     <a href="#" class="button secondary">Voir la démo</a>
                 </div>
                 <div class="project-card reveal">

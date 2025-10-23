@@ -1,3 +1,5 @@
+// logger.js - Configuration pour Winston
+
     const winston = require('winston');
 
     const logger = winston.createLogger({

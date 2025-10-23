@@ -67,9 +67,14 @@ h2 {
     transition: color 0.4s ease;
 }
 
+/*
+| ======================================================= |
+| ÉCRANS LARGE (PC) : Afficher les liens, Masquer l'icône |
+| ======================================================= |
+*/
 .nav-links {
-    display: flex;
-    gap: 35px; /* Plus d'espace entre les liens */
+    display: flex; /* Affiche les liens */
+    gap: 35px; 
 }
 
 .nav-links a {
@@ -80,6 +85,14 @@ h2 {
     font-size: 1rem;
     transition: color 0.3s ease, border-bottom 0.3s ease; 
 }
+
+.menu-toggle {
+    display: none; /* Cache l'icône du menu sur PC (C'ÉTAIT VOTRE DEMANDE) */
+    cursor: pointer;
+    font-size: 2rem; 
+    color: white; 
+}
+
 
 /* État ACTIF (Soulignement élégant de la section en cours) */
 .nav-links a.active {
@@ -100,8 +113,13 @@ h2 {
 }
 
 #navbar.scrolled .logo,
-#navbar.scrolled .nav-links a {
+#navbar.scrolled .nav-links a { 
     color: var(--dark-color); /* Le texte devient sombre */
+}
+
+/* L'icône du menu reste cachée si l'écran est large, même après scroll */
+#navbar.scrolled .menu-toggle {
+    display: none;
 }
 
 /* Assurez-vous que l'état actif reste orange sur fond blanc */
@@ -373,9 +391,9 @@ footer {
 
     /* Bouton hamburger (à inclure dans index.html) */
     .menu-toggle {
-        display: block; /* Afficher le bouton menu */
+        display: block; /* Rendre l'icône VISIBLE sur Mobile */
         font-size: 2rem;
-        color: white;
+        color: black;
         cursor: pointer;
     }
     #navbar.scrolled .menu-toggle {

@@ -4,14 +4,15 @@ const express = require('express');
 const cors = require('cors'); 
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer'); // Pour l'envoi d'emails (optionnel)
+const logger = require('./logger'); // Importation du module de log Winston
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// -----------------------------
+// -----------------------------\
 // CONFIGURATION CORS
-// -----------------------------
+// -----------------------------\
 const allowedOrigins = [
   'https://github.com/anouarsab/FRAMEWORk.git', // ton front
   'http://localhost:5500'        // pour test local
@@ -29,21 +30,21 @@ app.use(cors({
     methods: ['GET', 'POST'],
     credentials: true
 }));
-app.options('*', cors()); 
+// app.options('*', cors()); // LIGNE SUPPRIMÉE : Cause le PathError. Le middleware ci-dessus gère toutes les requêtes, y compris OPTIONS.
 app.use(express.json());
 
-// -----------------------------
+// -----------------------------\
 // CONNEXION MONGODB
-// -----------------------------
+// -----------------------------\
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio';
 
 mongoose.connect(MONGO_URI)
-    .then(() => console.log('Connexion MongoDB réussie !'))
-    .catch(err => console.error('Erreur de connexion MongoDB:', err));
+    .then(() => logger.info('✅ Connexion MongoDB réussie !')) // Utilisation de logger.info
+    .catch(err => logger.error('Erreur de connexion MongoDB:', err)); // Utilisation de logger.error
 
-// -----------------------------
-// SCHÉMA & MODÈLE MESSAGE
-// -----------------------------
+// -----------------------------\
+// SCHÉMA MONGODB
+// -----------------------------\
 const messageSchema = new mongoose.Schema({
     nom: { type: String, required: true },
     email: { type: String, required: true },
@@ -53,33 +54,29 @@ const messageSchema = new mongoose.Schema({
 
 const Message = mongoose.model('Message', messageSchema);
 
-// -----------------------------
-// ROUTES
-// -----------------------------
-app.get('/', (req, res) => {
-    res.status(200).send('API de Mikesonna en ligne !');
-});
-
-// POST /contact
-app.post('/contact', async (req, res) => {
+// -----------------------------\
+// ROUTE POST POUR CONTACT
+// -----------------------------\
+app.post('/api/contact', async (req, res) => {
     const { nom, email, message } = req.body;
 
     if (!nom || !email || !message) {
-        return res.status(400).json({ success: false, message: 'Tous les champs sont obligatoires.' });
+        logger.warn('Tentative d\'envoi de message incomplète.');
+        return res.status(400).json({ success: false, message: 'Tous les champs sont requis.' });
     }
 
     try {
-        // Enregistrement dans MongoDB
+        // 1. Enregistrer dans la base de données
         const newMessage = new Message({ nom, email, message });
         await newMessage.save();
-        console.log(`Nouveau message de ${nom} (${email})`);
+        logger.info(`Nouveau message de ${nom} (${email}) enregistré.`); // Utilisation de logger.info
 
-        // Optionnel : envoi email via Nodemailer
+        // 2. Optionnel : envoi email via Nodemailer
         if (process.env.SMTP_HOST) {
             const transporter = nodemailer.createTransport({
                 host: process.env.SMTP_HOST,
                 port: process.env.SMTP_PORT || 587,
-                secure: false,
+                secure: false, // true pour 465, false pour les autres ports
                 auth: {
                     user: process.env.SMTP_USER,
                     pass: process.env.SMTP_PASS
@@ -93,22 +90,24 @@ app.post('/contact', async (req, res) => {
                 text: `Nom: ${nom}\nEmail: ${email}\nMessage: ${message}`
             });
 
-            console.log('Email envoyé à l\'administrateur.');
+            // CORRECTION: Ajout de la parenthèse manquante ici
+            logger.info('Email de notification envoyé à l\'administrateur.'); 
+
         }
 
         res.status(200).json({ success: true, message: 'Message envoyé et enregistré avec succès !' });
 
     } catch (error) {
-        console.error('Erreur lors de l\'enregistrement ou envoi:', error);
+        logger.error('Erreur lors de l\'enregistrement ou envoi:', error);
         res.status(500).json({ success: false, message: 'Erreur serveur. Contactez l’administrateur.' });
     }
 });
 
-// -----------------------------
+// -----------------------------\
 // LANCEMENT DU SERVEUR
-// -----------------------------
+// -----------------------------\
 app.listen(port, () => {
-    console.log(`Serveur Express démarré sur le port ${port}`);
+    logger.info(`Serveur démarré sur le port http://localhost:${port}`); // Utilisation de logger.info
 });
 
 module.exports = app;
