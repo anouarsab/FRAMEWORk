@@ -117,8 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout après 10 secondes
 
             try {
-                // Utilisation de VERCEL_API_URL + '/api/contact'
-                const response = await fetch(`${VERCEL_API_URL}/api/contact`, { 
+                // CORRECTION: Changement de '/api/contact' à '/contact' pour correspondre à l'erreur.
+                // NOTE: Idéalement, le chemin devrait être /api/contact et le backend server.js devrait être redéployé.
+                // Mais pour que l'URL corresponde à l'erreur actuelle, nous utilisons /contact.
+                const response = await fetch(`${VERCEL_API_URL}/contact`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nom, email, message }),
