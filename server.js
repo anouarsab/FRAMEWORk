@@ -11,16 +11,17 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // -----------------------------\
-// CONFIGURATION CORS
+// CONFIGURATION CORS (CORRIGÉE)
 // -----------------------------\
 const allowedOrigins = [
-  'https://anouarsab.github.io', // NOUVELLE ORIGINE : L'URL où votre portfolio est hébergé
-  'http://localhost:5500'        // pour test local
+  'https://anouarsab.github.io', // ORIGINE CORRIGÉE: Votre site GitHub Pages
+  'http://localhost:5500',        // pour test local
+  'https://framewo-fs1yjlqdy-anouarsabs-projects.vercel.app' // Vercel lui-même (peut être nécessaire)
 ];
 
 app.use(cors({
     origin: function(origin, callback){
-        if(!origin) return callback(null, true); // pour Postman ou curl
+        if(!origin) return callback(null, true); 
         if(allowedOrigins.indexOf(origin) === -1){
             const msg = `CORS bloqué pour l'origine: ${origin}`;
             return callback(new Error(msg), false);
@@ -30,7 +31,7 @@ app.use(cors({
     methods: ['GET', 'POST'],
     credentials: true
 }));
-// app.options('*', cors()); // LIGNE SUPPRIMÉE : Cause le PathError. Le middleware ci-dessus gère toutes les requêtes, y compris OPTIONS.
+
 app.use(express.json());
 
 // -----------------------------\
@@ -39,8 +40,8 @@ app.use(express.json());
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio';
 
 mongoose.connect(MONGO_URI)
-    .then(() => logger.info('✅ Connexion MongoDB réussie !')) // Utilisation de logger.info
-    .catch(err => logger.error('Erreur de connexion MongoDB:', err)); // Utilisation de logger.error
+    .then(() => logger.info('✅ Connexion MongoDB réussie !')) 
+    .catch(err => logger.error('Erreur de connexion MongoDB:', err)); 
 
 // -----------------------------\
 // SCHÉMA MONGODB
@@ -55,9 +56,9 @@ const messageSchema = new mongoose.Schema({
 const Message = mongoose.model('Message', messageSchema);
 
 // -----------------------------\
-// ROUTE POST POUR CONTACT
+// ROUTE POST POUR CONTACT (CORRIGÉE à '/contact')
 // -----------------------------\
-app.post('/api/contact', async (req, res) => {
+app.post('/contact', async (req, res) => {
     const { nom, email, message } = req.body;
 
     if (!nom || !email || !message) {
@@ -69,7 +70,7 @@ app.post('/api/contact', async (req, res) => {
         // 1. Enregistrer dans la base de données
         const newMessage = new Message({ nom, email, message });
         await newMessage.save();
-        logger.info(`Nouveau message de ${nom} (${email}) enregistré.`); // Utilisation de logger.info
+        logger.info(`Nouveau message de ${nom} (${email}) enregistré.`); 
 
         // 2. Optionnel : envoi email via Nodemailer
         if (process.env.SMTP_HOST) {
@@ -90,7 +91,6 @@ app.post('/api/contact', async (req, res) => {
                 text: `Nom: ${nom}\nEmail: ${email}\nMessage: ${message}`
             });
 
-            // Ligne de correction de la parenthèse et utilisation de logger
             logger.info('Email de notification envoyé à l\'administrateur.'); 
 
         }
@@ -107,7 +107,7 @@ app.post('/api/contact', async (req, res) => {
 // LANCEMENT DU SERVEUR
 // -----------------------------\
 app.listen(port, () => {
-    logger.info(`Serveur démarré sur le port http://localhost:${port}`); // Utilisation de logger.info
+    logger.info(`Serveur démarré sur le port http://localhost:${port}`); 
 });
 
 module.exports = app;
