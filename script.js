@@ -1,125 +1,124 @@
 // script.js - Logique Frontend
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // IMPORTANT : Utilisez l'URL de base de votre déploiement Vercel
-    // Mise à jour de l'URL de l'API Vercel avec la nouvelle adresse
-    const VERCEL_API_URL = 'https://framewo-fs1yjlqdy-anouarsabs-projects.vercel.app'; 
+
+    // IMPORTANT : Utiliser un chemin d'accès relatif pour le déploiement sur la même plateforme (ex: Vercel)
+    const CONTACT_API_PATH = '/api/contact'; 
 
     const SECTIONS = document.querySelectorAll('main section');
     const NAV_ITEMS = document.querySelectorAll('.nav-item');
     
+    // Éléments DOM de la navigation
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
     const menuIcon = document.getElementById('menu-icon');
 
+    // Éléments DOM du Typewriter
     const typewriterElement = document.getElementById('typewriter');
     const textToType = "Développeur Web Full-Stack."; 
-    let i = 0;
+    let charIndex = 0;
+    let animationFrameId = null; // ID pour requestAnimationFrame
 
+    // -----------------------------\
+    // Fonction Typewriter (Utilisation de requestAnimationFrame pour la performance)
+    // -----------------------------\
     function typeWriter() {
         if (!typewriterElement) return;
-        if (i < textToType.length) {
-            typewriterElement.innerHTML += textToType.charAt(i);
-            i++;
-            setTimeout(typeWriter, 70);
+
+        if (charIndex < textToType.length) {
+            typewriterElement.innerHTML += textToType.charAt(charIndex);
+            charIndex++;
+            animationFrameId = requestAnimationFrame(typeWriter); // Meilleure performance
         } else {
             typewriterElement.classList.add('finished-typing'); 
         }
     }
 
-    // Gestion de l'ouverture/fermeture du menu mobile
+    // -----------------------------\
+    // Gestion du Menu Mobile
+    // -----------------------------\
     if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
+        const toggleMenu = () => {
             navLinks.classList.toggle('open');
-            // Change l'icône de bars à times (X)
             menuIcon.classList.toggle('fa-bars');
-            menuIcon.classList.toggle('fa-xmark'); 
-        });
+            menuIcon.classList.toggle('fa-times');
+            // Amélioration de l'accessibilité
+            menuToggle.setAttribute('aria-expanded', navLinks.classList.contains('open')); 
+        };
+        
+        menuToggle.addEventListener('click', toggleMenu);
 
-        // Fermer le menu lors du clic sur un lien (sur mobile)
+        // Fermer le menu lors du clic sur un lien
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    navLinks.classList.remove('open');
-                    menuIcon.classList.remove('fa-xmark');
-                    menuIcon.classList.add('fa-bars');
+                if (navLinks.classList.contains('open')) {
+                    toggleMenu();
                 }
             });
         });
     }
 
-    const revealElements = document.querySelectorAll('.reveal');
-    const navbar = document.getElementById('navbar');
-    const heroSection = document.querySelector('.hero');
-    // Calcule la hauteur pour le déclenchement du changement de couleur de la navbar
-    const heroHeight = heroSection ? heroSection.offsetHeight * 0.5 : 300; 
-
+    // -----------------------------\
+    // Animations au Défilement (Révélation des éléments)
+    // -----------------------------\
     function checkScrollAnimations() {
-        // Animation au défilement (Scroll Reveal)
-        revealElements.forEach(el => {
-            const elementTop = el.getBoundingClientRect().top;
-            const revealPoint = window.innerHeight * 0.8;
-            if (elementTop < revealPoint) el.classList.add('active');
-        });
+        const revealElements = document.querySelectorAll('.reveal');
+        const triggerBottom = window.innerHeight * 0.8;
 
-        // Changement de style de la Navbar au défilement
-        if (window.scrollY > heroHeight) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
+        revealElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
 
-        // Activation du lien de navigation
-        let current = '';
-        SECTIONS.forEach(section => {
-            const sectionTop = section.offsetTop;
-            // Utilise la hauteur de la navbar pour un décalage plus précis
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= sectionTop - navbar.offsetHeight - 10) { 
-                current = section.getAttribute('id');
+            if (elementTop < triggerBottom) {
+                element.classList.add('visible');
+            } else {
+                 // Optionnel : permet de "cacher" à nouveau lorsque l'utilisateur remonte (effet plus dynamique)
+                element.classList.remove('visible'); 
             }
         });
 
-        NAV_ITEMS.forEach(a => {
-            a.classList.remove('active');
-            if (a.getAttribute('href').substring(1) === current) {
-                a.classList.add('active');
+        // Mise à jour de la classe 'active' pour la navigation
+        SECTIONS.forEach((section, index) => {
+            const sectionTop = section.offsetTop - 100; // Ajustement
+            const sectionHeight = section.offsetHeight;
+            const scrollPosition = window.scrollY;
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                NAV_ITEMS.forEach(item => item.classList.remove('active'));
+                // Le lien actif correspond au index de la section (attention aux index)
+                const activeLink = document.querySelector(`.nav-links a[href="#${section.id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
             }
         });
     }
 
 
-    // ----------------------------------------
+    // -----------------------------\
     // Gestion du Formulaire de Contact
-    // ----------------------------------------
+    // -----------------------------\
     const contactForm = document.getElementById('contact-form');
-    const messageStatus = document.querySelector('.message-status');
-    const submitButton = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
+    const messageStatus = document.querySelector('#contact-form .message-status');
 
-
-    if (contactForm) {
+    if (contactForm && messageStatus) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Validation simple
-            if (!submitButton) return; 
-
+            const submitButton = contactForm.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             messageStatus.textContent = 'Envoi en cours...';
-            messageStatus.style.color = '#333';
+            messageStatus.style.color = '#007bff'; // Couleur de chargement
 
-            const nom = contactForm.nom.value;
-            const email = contactForm.email.value;
-            const message = contactForm.message.value;
-
-            // Protection contre les erreurs réseau ou timeout
+            const nom = contactForm.elements['nom'].value.trim();
+            const email = contactForm.elements['email'].value.trim();
+            const message = contactForm.elements['message'].value.trim();
+            
+            // Timeout pour gérer les serveurs "endormis" (ex: Vercel serverless)
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout après 10 secondes
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondes
 
             try {
-                // Le chemin utilisé est /contact (et non /api/contact) pour correspondre à l'erreur vue dans la console.
-                const response = await fetch(`${VERCEL_API_URL}/contact`, { 
+                const response = await fetch(CONTACT_API_PATH, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nom, email, message }),
@@ -135,17 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     messageStatus.style.color = 'green';
                     contactForm.reset();
                 } else if (result.message) {
+                    // Gérer les erreurs 400 (validation) et 500 (serveur) du backend
                     messageStatus.textContent = 'Erreur: ' + result.message;
                     messageStatus.style.color = 'red';
                 } else {
-                    messageStatus.textContent = 'Erreur inconnue. Vérifiez Vercel.';
+                    messageStatus.textContent = 'Erreur inconnue du serveur.';
                     messageStatus.style.color = 'red';
                 }
             } catch (error) {
                 clearTimeout(timeoutId);
-                messageStatus.textContent = error.name === 'AbortError' 
-                    ? "Erreur réseau: Timeout, le serveur est peut-être endormi." 
-                    : "Erreur réseau: Vérifiez Vercel/CORS (URL incorrecte?)."; // Message mis à jour
+                if (error.name === 'AbortError') {
+                    messageStatus.textContent = "Erreur: Le serveur est peut-être endormi. Veuillez réessayer.";
+                } else {
+                    messageStatus.textContent = "Erreur réseau. Vérifiez votre connexion ou l'URL de l'API."; 
+                }
                 messageStatus.style.color = 'red';
                 console.error(error);
             } finally {
@@ -154,7 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Lancement des fonctions au chargement de la page
     typeWriter();
     window.addEventListener('scroll', checkScrollAnimations);
+    window.addEventListener('resize', checkScrollAnimations); // Ajout pour la réactivité
     checkScrollAnimations();
 });

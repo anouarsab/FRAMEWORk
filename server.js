@@ -3,32 +3,37 @@
 const express = require('express');
 const cors = require('cors'); 
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer'); // Pour l'envoi d'emails (optionnel)
-const logger = require('./logger'); // Importation du module de log Winston
+const logger = require('./logger');
+const Message = require('./models/Message'); // Nouveau : Import du Model Mongoose
+const { sendContactEmail } = require('./utils/emailService'); // Nouveau : Import du service d'email
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio';
 
 // -----------------------------\
-// CONFIGURATION CORS (CORRIGÉE)
+// CONFIGURATION CORS
 // -----------------------------\
-const allowedOrigins = [
-  'https://anouarsab.github.io', // ORIGINE CORRIGÉE: Votre site GitHub Pages
-  'http://localhost:5500',        // pour test local
-  'https://framewo-fs1yjlqdy-anouarsabs-projects.vercel.app' // Vercel lui-même (peut être nécessaire)
-];
+// Utilisation d'une variable d'environnement pour une flexibilité accrue en production
+const allowedOrigins = (process.env.CORS_ORIGINS || 'https://anouarsab.github.io,http://localhost:5500').split(',');
 
 app.use(cors({
-    origin: function(origin, callback){
-        if(!origin) return callback(null, true); 
-        if(allowedOrigins.indexOf(origin) === -1){
-            const msg = `CORS bloqué pour l'origine: ${origin}`;
-            return callback(new Error(msg), false);
+    origin: (origin, callback) => {
+        // Autorise les requêtes sans origine (comme les outils REST ou same-origin)
+        if (!origin) return callback(null, true); 
+        
+        // Vérifie si l'origine est dans la liste autorisée
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
         }
-        return callback(null, true);
+        
+        // Blocage
+        const msg = `CORS bloqué pour l'origine: ${origin}`;
+        logger.warn(msg);
+        return callback(new Error(msg), false);
     },
-    methods: ['GET', 'POST'],
+    methods: ['POST'], // Limite les méthodes permises
     credentials: true
 }));
 
@@ -37,77 +42,69 @@ app.use(express.json());
 // -----------------------------\
 // CONNEXION MONGODB
 // -----------------------------\
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio';
-
 mongoose.connect(MONGO_URI)
-    .then(() => logger.info('✅ Connexion MongoDB réussie !')) 
-    .catch(err => logger.error('Erreur de connexion MongoDB:', err)); 
+    .then(() => logger.info('✅ Connexion MongoDB réussie !'))
+    .catch(error => {
+        logger.error('❌ Erreur de connexion MongoDB:', error);
+        // Optionnel: Quitter l'application si la connexion DB est critique
+        // process.exit(1); 
+    });
+
 
 // -----------------------------\
-// SCHÉMA MONGODB
+// ROUTE DE CONTACT
 // -----------------------------\
-const messageSchema = new mongoose.Schema({
-    nom: { type: String, required: true },
-    email: { type: String, required: true },
-    message: { type: String, required: true },
-    date: { type: Date, default: Date.now }
-});
-
-const Message = mongoose.model('Message', messageSchema);
-
-// -----------------------------\
-// ROUTE POST POUR CONTACT (CORRIGÉE à '/contact')
-// -----------------------------\
-app.post('/contact', async (req, res) => {
+app.post('/api/contact', async (req, res) => {
+    // 1. Validation de base et Destructuring
     const { nom, email, message } = req.body;
 
     if (!nom || !email || !message) {
-        logger.warn('Tentative d\'envoi de message incomplète.');
+        logger.warn('Tentative de soumission avec champs manquants.');
         return res.status(400).json({ success: false, message: 'Tous les champs sont requis.' });
     }
 
     try {
-        // 1. Enregistrer dans la base de données
+        // 2. Enregistrement du message dans la base de données
         const newMessage = new Message({ nom, email, message });
         await newMessage.save();
-        logger.info(`Nouveau message de ${nom} (${email}) enregistré.`); 
+        logger.info(`Nouveau message de ${nom} (${email}) enregistré (ID: ${newMessage._id}).`);
 
-        // 2. Optionnel : envoi email via Nodemailer
-        if (process.env.SMTP_HOST) {
-            const transporter = nodemailer.createTransport({
-                host: process.env.SMTP_HOST,
-                port: process.env.SMTP_PORT || 587,
-                secure: false, // true pour 465, false pour les autres ports
-                auth: {
-                    user: process.env.SMTP_USER,
-                    pass: process.env.SMTP_PASS
-                }
-            });
+        // 3. Optionnel : Envoi de l'email de notification (non bloquant)
+        sendContactEmail({ nom, email, message });
 
-            await transporter.sendMail({
-                from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
-                to: process.env.MY_EMAIL, // ton email
-                subject: `Nouveau message de ${nom}`,
-                text: `Nom: ${nom}\nEmail: ${email}\nMessage: ${message}`
-            });
-
-            logger.info('Email de notification envoyé à l\'administrateur.'); 
-
-        }
-
-        res.status(200).json({ success: true, message: 'Message envoyé et enregistré avec succès !' });
+        // 4. Réponse au client
+        res.status(200).json({ success: true, message: 'Message envoyé et enregistré avec succès ! Merci de m\'avoir contacté.' });
 
     } catch (error) {
-        logger.error('Erreur lors de l\'enregistrement ou envoi:', error);
-        res.status(500).json({ success: false, message: 'Erreur serveur. Contactez l’administrateur.' });
+        // Gérer les erreurs de validation Mongoose
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            logger.warn('Erreur de validation des données:', messages);
+            return res.status(400).json({ success: false, message: messages.join(' ') });
+        }
+        
+        // Gérer les autres erreurs serveur
+        logger.error('Erreur lors de l\'enregistrement:', error.stack);
+        res.status(500).json({ success: false, message: 'Erreur serveur interne. Veuillez réessayer plus tard.' });
     }
 });
 
 // -----------------------------\
-// LANCEMENT DU SERVEUR
+// ROUTE SANITAIRE (PING)
 // -----------------------------\
-app.listen(port, () => {
-    logger.info(`Serveur démarré sur le port http://localhost:${port}`); 
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-module.exports = app;
+
+// -----------------------------\
+// LANCEMENT DU SERVEUR
+// -----------------------------\
+// Gestion des erreurs non capturées pour plus de robustesse
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+app.listen(port, () => {
+    logger.info(`Serveur démarré sur le port http://localhost:${port}`);
+});

@@ -404,3 +404,49 @@ footer {
         padding: 15px 5%; /* Padding unifié pour mobile */
     }
 }
+
+/* Styles pour les éléments qui seront révélés au scroll */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ------------------------------------- */
+/* Typewriter (Meilleur curseur clignotant) */
+/* ------------------------------------- */
+.typewriter-cursor {
+    display: inline-block;
+    width: 2px; /* Largeur du curseur */
+    height: 1.2em; /* Hauteur relative à la ligne de texte */
+    background-color: var(--accent-color);
+    margin-left: 5px;
+    animation: blink-caret 0.75s step-end infinite;
+    vertical-align: middle;
+}
+
+/* Le curseur n'est plus visible après l'animation */
+#typewriter.finished-typing + .typewriter-cursor {
+    opacity: 0;
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { background-color: var(--accent-color); }
+}
+
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+}
+
+.message-status {
+    margin-top: 15px;
+    font-weight: 600;
+    text-align: center;
+}
